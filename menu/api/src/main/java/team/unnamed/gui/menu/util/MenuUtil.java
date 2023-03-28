@@ -3,8 +3,8 @@ package team.unnamed.gui.menu.util;
 import org.bukkit.inventory.Inventory;
 import org.bukkit.inventory.InventoryHolder;
 import org.jetbrains.annotations.NotNull;
-import team.unnamed.bukkit.ServerVersion;
 import team.unnamed.gui.menu.adapt.MenuInventoryWrapper;
+import team.unnamed.gui.menu.adapt.MenuInventoryWrapperImpl;
 import team.unnamed.gui.menu.item.ItemClickable;
 import team.unnamed.gui.menu.type.MenuInventory;
 
@@ -18,10 +18,8 @@ public final class MenuUtil {
 
     static {
         try {
-            WRAPPER_CONSTRUCTOR = Class.forName(
-                    "team.unnamed.gui.menu." + ServerVersion.CURRENT
-                            + ".MenuInventoryWrapperImpl"
-            ).getConstructor(InventoryHolder.class, MenuInventory.class);
+            WRAPPER_CONSTRUCTOR = Class.forName("team.unnamed.gui.menu.adapt.MenuInventoryWrapperImpl"
+            ).getConstructor(MenuInventory.class);
         } catch (ClassNotFoundException | NoSuchMethodException e) {
             throw new ExceptionInInitializerError("Your server version isn't supported for ungui.");
         }
@@ -41,8 +39,7 @@ public final class MenuUtil {
     public static @NotNull Inventory parseToInventory(MenuInventory menuInventory) {
         try {
             MenuInventoryWrapper wrapper
-                    = (MenuInventoryWrapper) WRAPPER_CONSTRUCTOR.newInstance(
-                    null, menuInventory);
+                    = (MenuInventoryWrapper) WRAPPER_CONSTRUCTOR.newInstance(menuInventory);
 
             return wrapper.getRawInventory();
         } catch (InstantiationException | IllegalAccessException | InvocationTargetException e) {
@@ -53,12 +50,9 @@ public final class MenuUtil {
     }
 
     public static boolean isCustomMenu(Inventory inventory) {
-        if (inventory == null) {
-            return false;
-        }
+        if (inventory == null) return false;
 
         InventoryHolder holder = inventory.getHolder();
-
         return holder instanceof MenuInventoryWrapper
                 || inventory instanceof MenuInventoryWrapper;
     }

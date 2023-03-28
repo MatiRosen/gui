@@ -15,8 +15,4 @@ dependencies {
     implementation(project(":gui-menu-api"))
     implementation(project(":gui-item-skull-api"))
     implementation(project(":gui-item-api"))
-
-    arrayOf("1_18_R2").forEach {
-        runtimeOnly(project(":gui-menu-adapt-v$it"))
-    }
 }
